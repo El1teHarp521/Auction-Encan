@@ -25,124 +25,99 @@ export function Landing() {
   const stats = [
     { label: 'Активных аукционов', value: '156', icon: TrendingUp },
     { label: 'Успешных сделок', value: '2,847', icon: Building2 },
-    { label: 'Довольных клиентов', value: '5,234', icon: Home },
+    { label: 'Счастливых семей', value: '5,234', icon: Home },
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-background via-card to-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-              Платформа аукционов недвижимости
+      <section className="relative py-16 md:py-24 bg-gradient-to-br from-background via-card to-background">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto mb-10">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight">
+              Информационная система для покупки аукционной недвижимости молодыми семьями с детьми
             </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Найдите идеальную недвижимость или продайте свою на выгодных условиях
+            <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed">
+              Найдите идеальный дом для вашей семьи на выгодных аукционных условиях
             </p>
           </div>
 
-          {/* Search Block */}
-          <Card className="max-w-5xl mx-auto p-6 shadow-xl border-primary/20">
+          <Card className="max-w-5xl mx-auto p-5 shadow-lg border-primary/10 bg-card/50 backdrop-blur">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-              <div className="lg:col-span-2">
-                <label className="text-sm mb-2 block text-muted-foreground">Адрес</label>
+              <div className="lg:col-span-2 text-left">
+                <label className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 block ml-1 tracking-tight">Адрес объекта</label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                   <Input
-                    placeholder="Введите адрес..."
+                    placeholder="Введите город или улицу..."
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    className="pl-10"
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    className="pl-10 h-10 text-sm"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="text-sm mb-2 block text-muted-foreground">Тип недвижимости</label>
+              <div className="text-left">
+                <label className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 block ml-1 tracking-tight">Тип жилья</label>
                 <Select value={propertyType} onValueChange={setPropertyType}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Все типы</SelectItem>
+                    <SelectItem value="all">Все объекты</SelectItem>
                     <SelectItem value="apartment">Квартира</SelectItem>
-                    <SelectItem value="house">Дом</SelectItem>
+                    <SelectItem value="house">Дом / Коттедж</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div>
-                <label className="text-sm mb-2 block text-muted-foreground">Цена</label>
+              <div className="text-left">
+                <label className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 block ml-1 tracking-tight">Бюджет (₽)</label>
                 <div className="flex gap-2">
-                  <Input
-                    placeholder="От"
-                    type="number"
-                    value={priceFrom}
-                    onChange={(e) => setPriceFrom(e.target.value)}
-                    className="w-full"
-                  />
-                  <Input
-                    placeholder="До"
-                    type="number"
-                    value={priceTo}
-                    onChange={(e) => setPriceTo(e.target.value)}
-                    className="w-full"
-                  />
+                  <Input placeholder="От" type="number" value={priceFrom} onChange={(e) => setPriceFrom(e.target.value)} className="h-10 text-sm" />
+                  <Input placeholder="До" type="number" value={priceTo} onChange={(e) => setPriceTo(e.target.value)} className="h-10 text-sm" />
                 </div>
               </div>
             </div>
 
-            <Button onClick={handleSearch} className="w-full" size="lg">
-              <Search className="mr-2 h-5 w-5" />
+            <Button onClick={handleSearch} className="w-full h-11 text-sm font-bold uppercase tracking-widest" size="lg">
               Найти недвижимость
             </Button>
           </Card>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-card/30">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {stats.map((stat) => (
-              <Card key={stat.label} className="p-6 text-center hover:border-primary/50 transition-colors">
-                <stat.icon className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-                <div className="text-muted-foreground">{stat.label}</div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Features Section */}
-      <section className="py-16">
+      <section className="py-16 bg-muted/20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Почему выбирают Encan</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="p-6">
-              <Building2 className="h-10 w-10 text-primary mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Широкий выбор</h3>
-              <p className="text-muted-foreground">
-                Квартиры, дома, коммерческая недвижимость — все в одном месте
+          <h2 className="text-xl md:text-2xl font-bold text-center mb-12 uppercase tracking-widest">Почему выбирают Encan</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <Card className="p-6 border-primary/5 hover:border-primary/20 transition-all group">
+              <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary transition-colors">
+                <Building2 className="h-6 w-6 text-primary group-hover:text-white" />
+              </div>
+              <h3 className="text-lg font-bold mb-2">Широкий выбор</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Большой каталог жилой недвижимости: просторные квартиры и уютные дома для вашего комфорта.
               </p>
             </Card>
 
-            <Card className="p-6">
-              <TrendingUp className="h-10 w-10 text-primary mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Прозрачные торги</h3>
-              <p className="text-muted-foreground">
-                Следите за ставками в реальном времени и делайте осознанный выбор
+            <Card className="p-6 border-primary/5 hover:border-primary/20 transition-all group">
+              <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary transition-colors">
+                <TrendingUp className="h-6 w-6 text-primary group-hover:text-white" />
+              </div>
+              <h3 className="text-lg font-bold mb-2">Прозрачные торги</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Следите за ставками в реальном времени. Мы обеспечиваем полную открытость процесса.
               </p>
             </Card>
 
-            <Card className="p-6">
-              <Briefcase className="h-10 w-10 text-primary mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Безопасные сделки</h3>
-              <p className="text-muted-foreground">
-                Проверенные продавцы и надежная система верификации
+            <Card className="p-6 border-primary/5 hover:border-primary/20 transition-all group">
+              <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary transition-colors">
+                <Briefcase className="h-6 w-6 text-primary group-hover:text-white" />
+              </div>
+              <h3 className="text-lg font-bold mb-2">Безопасные сделки</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Тщательная проверка каждого продавца и многоуровневая верификация для защиты вашей семьи.
               </p>
             </Card>
           </div>
