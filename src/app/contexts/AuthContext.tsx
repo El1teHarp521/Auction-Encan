@@ -25,7 +25,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const login = (email: string, password: string) => {
-    // ЕДИНСТВЕННЫЙ АДМИН - АРТЕМ
     if (email === 'El1teHarp@gmail.com' && password === 'Sklob4201031!') {
       setUser({
         id: 'admin-artem',
@@ -37,10 +36,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       return;
     }
-
-    // Все остальные по умолчанию заходят как клиенты
     setUser({
-      id: 'user-' + Math.random(),
+      id: 'u-' + Math.random().toString(36).substr(2, 5),
       name: email.split('@')[0],
       email,
       role: 'client',
@@ -51,19 +48,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => setUser(null);
 
   const register = (name: string, email: string, password: string) => {
-    setUser({ id: Math.random().toString(), name, email, role: 'client', verified: false });
+    setUser({ id: 'u-' + Math.random().toString(36).substr(2, 5), name, email, role: 'client', verified: false });
   };
 
   const setUserRole = (role: UserRole) => {
-    if (!user) return;
-    
-    // Запрет: Обычный юзер не может стать админом через HUD
-    if (role === 'admin' && !user.isSuperAdmin) {
-      alert("Доступ запрещен");
-      return;
+    if (user) {
+      if (role === 'admin' && !user.isSuperAdmin) return;
+      setUser({ ...user, role });
     }
-
-    setUser({ ...user, role });
   };
 
   return (

@@ -2,13 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
+// Конфигурация для гарантированного запуска на локальном IP
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    host: '127.0.0.1', // Прямой IP вместо localhost
+    host: '127.0.0.1', // Используем явный IP адрес
     port: 5173,
     strictPort: true,
-    open: true // Автоматически откроет браузер при запуске
   }
 })
