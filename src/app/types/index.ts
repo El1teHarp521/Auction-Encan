@@ -1,30 +1,38 @@
-export type UserRole = 'client' | 'seller' | 'admin';
-
 export interface Lot {
-  id: string;
+  id: number;
   title: string;
   description: string;
   address: string;
   type: 'apartment' | 'house';
-  area: number;
-  rooms?: number;
-  floor?: number;
-  currentPrice: number;
-  startingPrice: number;
   imageUrl: string;
-  sellerId: string;
+  currentPrice: number;
+  area: number;
   sellerName: string;
-  status: 'pending' | 'active' | 'closed' | 'rejected';
   endDate: string;
-  createdAt: string;
   bidsCount: number;
 }
 
 export interface Bid {
-  id: string;
-  lotId: string;
-  userId: string;
-  userName: string;
+  id: number;
+  lot_id: number;
   amount: number;
-  timestamp: string;
+  user_name: string;
+  user_id: number;
+  created_at: string;
+}
+export interface Lot {
+  id: number; // Теперь это число
+  title: string;
+  description: string;
+  address: string;
+  type: 'apartment' | 'house';
+  status: 'pending' | 'active' | 'closed';
+  imageUrl: string;
+  currentPrice: number;
+  startingPrice: number; // Добавили
+  area: number;
+  sellerId: number;      // Добавили
+  sellerName: string;
+  endDate: string;
+  bidsCount: number;
 }

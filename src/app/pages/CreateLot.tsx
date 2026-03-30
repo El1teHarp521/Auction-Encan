@@ -53,7 +53,6 @@ export function CreateLot() {
     finalEndDate.setHours(parseInt(hours), parseInt(minutes));
 
     const newLot = {
-      id: Math.random().toString(36).substr(2, 9),
       ...formData,
       area: Number(formData.area),
       startingPrice: Number(formData.startingPrice),

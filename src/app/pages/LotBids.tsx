@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { ArrowLeft, User, TrendingUp, Clock } from 'lucide-react';
+import { ArrowLeft, Clock, TrendingUp } from 'lucide-react';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -14,24 +14,29 @@ export function LotBids() {
   const [bids, setBids] = useState<Bid[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ЗАГРУЗКА ДАННЫХ ИЗ БАЗЫ
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Загружаем лот
+        // 1. Загружаем данные лота
         const lotRes = await fetch(`http://localhost:8000/lots/${id}`);
         if (!lotRes.ok) throw new Error();
         const lotData = await lotRes.json();
         setLot(lotData);
 
-        // Загружаем все ставки для этого лота
+        // 2. Загружаем ставки (используем lotId как в Python коде)
         const bidsRes = await fetch(`http://localhost:8000/bids?lotId=${id}`);
         const bidsData = await bidsRes.json();
-        // Сортируем: новые ставки сверху
-        setBids(bidsData.sort((a: Bid, b: Bid) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
+        
+        // 3. Сортируем: новые ставки сверху (используем created_at вместо timestamp)
+        if (Array.isArray(bidsData)) {
+            setBids(bidsData.sort((a, b) => 
+                new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            ));
+        }
         
         setLoading(false);
-      } catch {
+      } catch (err) {
+        console.error("Ошибка загрузки ставок:", err);
         setLoading(false);
       }
     };
@@ -40,11 +45,11 @@ export function LotBids() {
   }, [id]);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU').format(price) + ' ₽';
+    return new Intl.NumberFormat('ru-RU').format(price || 0) + ' ₽';
   };
 
   if (loading) return <div className="p-20 text-center text-primary font-bold animate-pulse text-xs uppercase tracking-widest">Загрузка данных торгов...</div>;
-  if (!lot) return <div className="p-20 text-center text-xs uppercase font-bold">Лот не найден в базе данных</div>;
+  if (!lot) return <div className="p-20 text-center text-xs uppercase font-bold">Лот не найден</div>;
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-5xl">
@@ -57,7 +62,6 @@ export function LotBids() {
       </Button>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Краткая инфо карточка */}
         <Card className="p-5 h-fit border-primary/20 shadow-md">
           <img src={lot.imageUrl} alt="" className="w-full h-32 object-cover rounded-lg mb-4 border" />
           <h2 className="text-md font-bold mb-2 leading-tight">{lot.title}</h2>
@@ -76,12 +80,11 @@ export function LotBids() {
           </Badge>
         </Card>
 
-        {/* Список ставок */}
         <div className="lg:col-span-2 space-y-3">
           <h2 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4">История всех ставок</h2>
           
           {bids.length > 0 ? (
-            bids.map((bid: Bid, index: number) => (
+            bids.map((bid, index) => (
               <Card 
                 key={bid.id} 
                 className={`p-4 flex items-center justify-between border-l-4 transition-all ${
@@ -90,15 +93,17 @@ export function LotBids() {
               >
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center font-bold text-primary text-[10px]">
-                    {bid.userName[0].toUpperCase()}
+                    {/* ИСПРАВЛЕНО: используем user_name */}
+                    {(bid.user_name || "U")[0].toUpperCase()}
                   </div>
                   <div>
                     <p className="font-bold text-sm">
-                      {bid.userName} 
+                      {bid.user_name} 
                       {index === 0 && <span className="ml-2 text-[8px] bg-primary text-white px-1.5 py-0.5 rounded-sm uppercase tracking-tighter">Лидер</span>}
                     </p>
                     <p className="text-[9px] text-muted-foreground flex items-center gap-1 uppercase font-medium">
-                      <Clock className="h-2.5 w-2.5" /> {new Date(bid.timestamp).toLocaleString('ru-RU')}
+                      {/* ИСПРАВЛЕНО: используем created_at */}
+                      <Clock className="h-2.5 w-2.5" /> {new Date(bid.created_at).toLocaleString('ru-RU')}
                     </p>
                   </div>
                 </div>
@@ -118,13 +123,13 @@ export function LotBids() {
                 <div>
                   <p className="text-[8px] uppercase font-bold text-muted-foreground mb-0.5">Средний шаг</p>
                   <p className="text-sm font-bold">
-                    {formatPrice(Math.round((lot.currentPrice - lot.startingPrice) / bids.length))}
+                    {formatPrice(Math.round(((lot.currentPrice || 0) - (lot.startingPrice || 0)) / bids.length))}
                   </p>
                 </div>
                 <div>
                   <p className="text-[8px] uppercase font-bold text-muted-foreground mb-0.5">Всего прирост</p>
                   <p className="text-sm font-bold text-primary">
-                    +{formatPrice(lot.currentPrice - lot.startingPrice)}
+                    +{formatPrice((lot.currentPrice || 0) - (lot.startingPrice || 0))}
                   </p>
                 </div>
               </div>
